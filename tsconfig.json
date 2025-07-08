@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                // 生成的JS代码目标版本
+    "module": "commonjs",              // Node.js常用模块系统
+    "lib": ["ES2020", "dom"],           // 可用的JS内置对象
+    "strict": true,                    // 开启所有严格类型检查
+    "esModuleInterop": true,           // 兼容CommonJS和ES模块
+    "skipLibCheck": true,              // 跳过依赖库的类型检查，加快编译
+    "forceConsistentCasingInFileNames": true, // 文件名大小写一致性
+    "resolveJsonModule": true,         // 允许导入JSON文件
+    "sourceMap": true,                 // 生成source map，方便调试
+    "noImplicitAny": true,             // 禁止隐式any类型
+    "noImplicitReturns": true,         // 函数必须有返回值
+    "noFallthroughCasesInSwitch": true // switch必须有break
+  },
+  "include": [
+    "*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+} 
