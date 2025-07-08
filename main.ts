@@ -1,4 +1,4 @@
-import { launchBrowser } from './services/browser'
+import { launchBrowser } from './utils/browser'
 ;(async () => {
   const browser = await launchBrowser()
 
