@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer-core'
 import logger from '../utils/logger'
+import inquirer from 'inquirer'
 
 /**
  * 判断当前页面是否已登录
@@ -21,5 +22,60 @@ export async function isLoggedIn(page: Page): Promise<boolean> {
  */
 export async function autoLogin(page: Page) {
   const loginBtn = await page.$('a[ka="header-login"]')
-  console.log(loginBtn)
+  logger.info('找到登录按钮')
+  if (loginBtn) {
+    await loginBtn?.click()
+    logger.info('点击了登录按钮')
+  } else {
+    logger.error('完犊子了，没找到登录按钮')
+    return
+  }
+
+  // 2. 等待登录弹窗或表单出现（需要根据实际页面调整选择器）
+  await page.waitForSelector(
+    'input[placeholder="手机号"], input[placeholder="短信验证码"]',
+    {
+      timeout: 10000,
+    }
+  )
+  logger.info('登录表单出现')
+
+  const phone = process.env.PHONE
+  if (!phone) {
+    logger.error('手机号未配置')
+    return
+  }
+  await page.type('input[placeholder="手机号"]', phone, {
+    delay: Math.random() * 150 + 50,
+  })
+  logger.info('手机号输入完成')
+
+  const sendCode = await page.$('div[ka="send_sms_code_click"]')
+  if (sendCode) {
+    await sendCode.click()
+    logger.info('点击了发送验证码按钮')
+  } else {
+    logger.error('完犊子了，没找到发送验证码按钮')
+    return
+  }
+
+  const { code } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'code',
+      message: '请输入短信验证码：',
+    },
+  ])
+  await page.type('input[placeholder="短信验证码"]', code, {
+    delay: Math.random() * 150 + 50,
+  })
+  logger.info('短信验证码输入完成')
+
+  // 4. 点击登录/提交按钮（需要根据实际页面调整选择器）
+  /* await page.click('button[type="submit"], button.login-btn')
+  logger.info('点击了登录提交按钮') */
+
+  // 5. 等待页面跳转或登录成功标志
+  /*  await page.waitForNavigation({ waitUntil: 'networkidle2' })
+  logger.info('登录流程结束') */
 }

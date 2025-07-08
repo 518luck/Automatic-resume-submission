@@ -34,4 +34,10 @@ const logger = createLogger({
     new transports.File({ filename: 'logs/app.log' }), // 输出到 logs/app.log 文件
   ],
 })
+
+logger.info('info 日志')
+logger.error('error 日志')
+logger.warn('warn 日志')
+logger.debug('debug 日志')
+
 export default logger

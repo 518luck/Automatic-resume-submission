@@ -1,6 +1,9 @@
 import { launchBrowser } from './utils/browser'
 import logger from './utils/logger'
 import { isLoggedIn, autoLogin } from './services/loginService'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 void (async () => {
   logger.info('================ 程序启动 ================')
