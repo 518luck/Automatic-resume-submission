@@ -1,3 +1,5 @@
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&logoColor=white&style=for-the-badge)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green?logo=node.js&style=flat-square)
 <pre>
   <code>
     /Automatic-resume-submission
