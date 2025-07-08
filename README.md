@@ -1,5 +1,12 @@
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&logoColor=white&style=for-the-badge)
-![Node.js](https://img.shields.io/badge/Node.js-18.x-green?logo=node.js&style=flat-square)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green?logo=node.js&style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&style=for-the-badge)
+![Puppeteer](https://img.shields.io/badge/Puppeteer-Core-brightgreen?logo=puppeteer&style=for-the-badge)
+<br/>
+![puppeteer-extra](https://img.shields.io/badge/puppeteer--extra-Plugin-blueviolet?style=for-the-badge)
+![Stealth](https://img.shields.io/badge/Stealth-Plugin-orange?style=for-the-badge)
+![fs-extra](https://img.shields.io/badge/fs--extra-File%20System-yellow?style=for-the-badge)
+![node-fetch](https://img.shields.io/badge/node--fetch-HTTP%20Client-lightgrey?style=for-the-badge)
+<br/>
 <pre>
   <code>
     /Automatic-resume-submission
