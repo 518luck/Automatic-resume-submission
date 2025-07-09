@@ -1,7 +1,9 @@
+import dotenv from 'dotenv'
+
 import { launchBrowser } from './utils/browser'
 import logger from './utils/logger'
 import { isLoggedIn, autoLogin } from './services/boos/loginService'
-import dotenv from 'dotenv'
+import { selectCity } from './pages/zhipin'
 
 dotenv.config()
 
@@ -19,5 +21,7 @@ void (async () => {
 
   if (!checkLogin) {
     await autoLogin(page)
+  } else {
+    await selectCity(page)
   }
 })()

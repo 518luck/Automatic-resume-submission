@@ -31,7 +31,6 @@ export async function autoLogin(page: Page) {
     return
   }
 
-  // 2. 等待登录弹窗或表单出现（需要根据实际页面调整选择器）
   await page.waitForSelector(
     'input[placeholder="手机号"], input[placeholder="短信验证码"]',
     {
