@@ -71,6 +71,9 @@ export async function autoLogin(page: Page) {
     return
   }
 
+  await page.waitForSelector('.geetest_panel', { hidden: true, timeout: 60000 })
+  logger.info('滑块验证已通过')
+
   const { code } = await inquirer.prompt([
     {
       type: 'input',
@@ -104,6 +107,18 @@ export async function autoLogin(page: Page) {
     return
   }
 
+  const dialogSur = await page.waitForSelector("span[ka='dialog_sure']", {
+    timeout: 10000,
+  })
+  if (dialogSur) {
+    await dialogSur.click()
+    logger.info('点击了同意按钮')
+  } else {
+    logger.error('完犊子了，没找到同意按钮')
+    return
+  }
+
+  logger.info('等待登录跳转...')
   await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 })
   logger.info('登录流程结束')
 }
