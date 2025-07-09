@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer-core'
-import logger from '../utils/logger'
+import logger from '../../utils/logger'
 import inquirer from 'inquirer'
 
 /**

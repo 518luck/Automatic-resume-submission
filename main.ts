@@ -1,6 +1,6 @@
 import { launchBrowser } from './utils/browser'
 import logger from './utils/logger'
-import { isLoggedIn, autoLogin } from './services/loginService'
+import { isLoggedIn, autoLogin } from './services/boos/loginService'
 import dotenv from 'dotenv'
 
 dotenv.config()

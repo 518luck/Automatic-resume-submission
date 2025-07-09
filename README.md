@@ -13,7 +13,7 @@
     ├─ mian.ts                  // 主入口（启动脚本）
     ├─ /pages                   // 各招聘网站页面操作
     │    ├─ zhipin.ts           // BOSS直聘相关操作
-    │    ├─ liepin.ts           // 猎聘相关操作（如有）
+    │    ├─ liepin.ts           // 猎聘相关操作（目前木有）
     │    └─ ...                 // 其他招聘网站
     ├─ /services                // 业务逻辑层（如投递简历、登录等）
     │    ├─ resumeSubmitter.ts  // 简历投递服务
@@ -25,7 +25,8 @@
     │    └─ ...
     ├─ /config                  // 配置文件
     │    └─ index.ts            // 统一配置入口
-    ├─ /longTimeMemory          // 浏览器持久化数据
+    ├─ /data                    
+    │    └─ /userData           // 浏览器持久化数据
     ├─ package.json
     ├─ tsconfig.json
     └─ README.md
