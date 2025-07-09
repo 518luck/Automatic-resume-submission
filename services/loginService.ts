@@ -59,6 +59,18 @@ export async function autoLogin(page: Page) {
     return
   }
 
+  await page.waitForSelector('.geetest_radar_tip', { timeout: 15000 })
+  logger.info('滑动验证码出现')
+
+  const geetestRadarTip = await page.$('.geetest_radar_tip')
+  if (geetestRadarTip) {
+    await geetestRadarTip.click()
+    logger.info('点击了滑动验证码')
+  } else {
+    logger.error('完犊子了，没找到滑动验证码')
+    return
+  }
+
   const { code } = await inquirer.prompt([
     {
       type: 'input',
@@ -66,16 +78,32 @@ export async function autoLogin(page: Page) {
       message: '请输入短信验证码：',
     },
   ])
+
   await page.type('input[placeholder="短信验证码"]', code, {
     delay: Math.random() * 150 + 50,
   })
   logger.info('短信验证码输入完成')
 
-  // 4. 点击登录/提交按钮（需要根据实际页面调整选择器）
-  /* await page.click('button[type="submit"], button.login-btn')
-  logger.info('点击了登录提交按钮') */
+  const agreePolicy = await page.$('.agree-policy')
+  if (agreePolicy) {
+    await agreePolicy.click()
+    logger.info('点击了同意协议按钮')
+  } else {
+    logger.error('完犊子了，没找到同意协议按钮')
+    return
+  }
 
-  // 5. 等待页面跳转或登录成功标志
-  /*  await page.waitForNavigation({ waitUntil: 'networkidle2' })
-  logger.info('登录流程结束') */
+  const signupSubmitButton = await page.$(
+    'button[ka="signup_submit_button_click"]'
+  )
+  if (signupSubmitButton) {
+    await signupSubmitButton.click()
+    logger.info('点击了登录按钮')
+  } else {
+    logger.error('完犊子了，没找到登录按钮')
+    return
+  }
+
+  await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 })
+  logger.info('登录流程结束')
 }
