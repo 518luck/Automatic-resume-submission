@@ -70,3 +70,30 @@ export async function selectCity(page: Page) {
   await page.waitForSelector('ul[class="rec-job-list"]', { timeout: 10000 })
   logger.info('搜索结果出现')
 }
+
+export async function clickAllJobsAndCommunicate(page: Page) {
+  await page.waitForSelector("div[class='card-area']", { timeout: 10000 })
+
+  logger.info('收集当前页面所有卡片')
+  const jobCards = await page.$$('.card-area')
+  for (const jobCard of jobCards) {
+    const jobBox = await jobCard.$('li.job-card-box')
+    if (jobBox) {
+      const jobName = await jobBox.$eval('.job-name', (el) => el.textContent)
+      logger.info(`职位名称: ${jobName}`)
+
+      const jobSalary = await jobBox.$eval(
+        '.job-salary',
+        (el) => el.textContent
+      )
+      logger.info(`职位薪资: ${jobSalary}`)
+
+      const bossOnlineIcon = await jobBox.$('.boss-online-icon')
+      if (bossOnlineIcon) {
+        logger.info('boss在线,准备开始沟通')
+      } else {
+        logger.info('boss不在线')
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { launchBrowser } from './utils/browser'
 import logger from './utils/logger'
 import { isLoggedIn, autoLogin } from './services/boos/loginService'
-import { selectCity } from './pages/zhipin'
+import { selectCity, clickAllJobsAndCommunicate } from './pages/zhipin'
 
 dotenv.config()
 
@@ -23,5 +23,6 @@ void (async () => {
     await autoLogin(page)
   } else {
     await selectCity(page)
+    await clickAllJobsAndCommunicate(page)
   }
 })()
