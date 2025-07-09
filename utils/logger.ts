@@ -35,9 +35,4 @@ const logger = createLogger({
   ],
 })
 
-logger.info('info 日志')
-logger.error('error 日志')
-logger.warn('warn 日志')
-logger.debug('debug 日志')
-
 export default logger

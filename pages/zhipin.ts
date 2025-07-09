@@ -69,6 +69,18 @@ export async function selectCity(page: Page) {
 
   await page.waitForSelector('ul[class="rec-job-list"]', { timeout: 10000 })
   logger.info('搜索结果出现')
+  // await fetchJobListFromApi(page)
+}
+
+export async function fetchJobListFromApi(page: Page) {
+  const response = await page.waitForResponse(
+    (response) =>
+      response.url().includes('/wapi/zpgeek/search/joblist.json') &&
+      response.status() === 200
+  )
+
+  const data = await response.json()
+  logger.info('接口数据:', data)
 }
 
 export async function clickAllJobsAndCommunicate(page: Page) {

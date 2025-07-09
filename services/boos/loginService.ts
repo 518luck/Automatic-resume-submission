@@ -49,6 +49,9 @@ export async function autoLogin(page: Page) {
   })
   logger.info('手机号输入完成')
 
+  await page.waitForSelector('div[ka="send_sms_code_click"]', {
+    timeout: 100000,
+  })
   const sendCode = await page.$('div[ka="send_sms_code_click"]')
   if (sendCode) {
     await sendCode.click()
@@ -58,7 +61,21 @@ export async function autoLogin(page: Page) {
     return
   }
 
-  await page.waitForSelector('.geetest_radar_tip', { timeout: 15000 })
+  await page.waitForSelector('div[class="yidun_intelli-tips"]', {
+    visible: true,
+    timeout: 10000,
+  })
+
+  const yidunIntelliTips = await page.$('div[class="yidun_intelli-tips"]')
+  if (yidunIntelliTips) {
+    logger.info('点击了滑动验证码')
+    await yidunIntelliTips.click()
+  } else {
+    logger.error('完犊子了，没找到滑动验证码')
+    return
+  }
+
+  /*   await page.waitForSelector('.geetest_radar_tip', { timeout: 15000 })
   logger.info('滑动验证码出现')
 
   const geetestRadarTip = await page.$('.geetest_radar_tip')
@@ -68,7 +85,7 @@ export async function autoLogin(page: Page) {
   } else {
     logger.error('完犊子了，没找到滑动验证码')
     return
-  }
+  } */
 
   await page.waitForSelector('.geetest_panel', { hidden: true, timeout: 60000 })
   logger.info('滑块验证已通过')
@@ -120,4 +137,6 @@ export async function autoLogin(page: Page) {
   logger.info('等待登录跳转...')
   await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 })
   logger.info('登录流程结束')
+
+  return true
 }

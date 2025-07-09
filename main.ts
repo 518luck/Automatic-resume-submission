@@ -21,8 +21,8 @@ void (async () => {
 
   if (!checkLogin) {
     await autoLogin(page)
-  } else {
-    await selectCity(page)
-    await clickAllJobsAndCommunicate(page)
   }
+
+  await selectCity(page)
+  await clickAllJobsAndCommunicate(page)
 })()
