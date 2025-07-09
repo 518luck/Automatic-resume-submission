@@ -100,7 +100,12 @@ export async function clickAllJobsAndCommunicate(page: Page) {
         '.job-salary',
         (el) => el.textContent
       )
-      logger.info(`职位薪资: ${jobSalary}`)
+      if (jobSalary) {
+        const codes = Array.from(jobSalary)
+          .map((ch) => '\\u' + ch.charCodeAt(0).toString(16))
+          .join(' ')
+        logger.info(`职位薪资: ${codes}`)
+      }
 
       const bossOnlineIcon = await jobBox.$('.boss-online-icon')
       if (bossOnlineIcon) {
