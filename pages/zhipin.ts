@@ -71,7 +71,15 @@ export async function selectCity(page: Page) {
   logger.info('搜索结果出现')
 }
 
-// 主流程函数：负责循环、滚动、整体流程控制
+/**
+ * 自动遍历并与所有职位卡片进行沟通。
+ *
+ * 该函数会循环遍历页面上所有职位卡片，自动滚动页面以加载更多职位，
+ * 并调用 handleJobBox 处理每一个职位卡片，直到没有新职位加载为止。
+ *
+ * @param {Page} page - Puppeteer 的 Page 实例，表示当前浏览器页面。
+ * @returns {Promise<void>} 无返回值，流程中如遇错误会提前 return 并记录日志。
+ */
 export async function clickAllJobsAndCommunicate(page: Page) {
   let lastJobCount: number = 0
   let reachedEnd: boolean = false
@@ -98,6 +106,16 @@ export async function clickAllJobsAndCommunicate(page: Page) {
   }
 }
 
+/**
+ * 处理单个职位卡片的沟通逻辑。
+ *
+ * 包括提取职位名称、薪资，判断 boss 是否在线，
+ * 如在线则自动点击卡片并进行沟通操作。
+ *
+ * @param {ElementHandle} jobBox - Puppeteer 的 ElementHandle，表示单个职位卡片元素。
+ * @param {Page} page - Puppeteer 的 Page 实例。
+ * @returns {Promise<void>} 无返回值，流程中如遇错误会记录日志。
+ */
 async function handleJobBox(jobBox: ElementHandle, page: Page) {
   // 处理单个职位卡片的所有逻辑
   // 包括 boss 在线判断、点击、沟通等
@@ -147,7 +165,15 @@ async function handleJobBox(jobBox: ElementHandle, page: Page) {
   }
 }
 
-// 滚动到页面底部加载新职位
+/**
+ * 滚动页面到底部并等待新职位加载。
+ *
+ * 该函数会将页面滚动到底部，随后等待一段时间，
+ * 以确保新职位卡片能够被加载和渲染。
+ *
+ * @param {Page} page - Puppeteer 的 Page 实例。
+ * @returns {Promise<void>} 无返回值。
+ */
 async function scrollAndWaitForNewJobs(page: Page) {
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight)
