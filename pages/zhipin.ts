@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer-core'
+import { Page, ElementHandle } from 'puppeteer-core'
 import logger from '../utils/logger'
 
 /**
@@ -71,48 +71,86 @@ export async function selectCity(page: Page) {
   logger.info('搜索结果出现')
 }
 
-export async function fetchJobListFromApi(page: Page) {
-  logger.info('开始监听接口')
-  const response = await page.waitForResponse(async (response) => {
-    logger.info('捕获到接口:', response)
-    const match =
-      response.url().includes('/wapi/zpgeek/search/joblist.json') &&
-      response.status() === 200
-    return match
-  })
+// 主流程函数：负责循环、滚动、整体流程控制
+export async function clickAllJobsAndCommunicate(page: Page) {
+  let lastJobCount: number = 0
+  let reachedEnd: boolean = false
 
-  const data = await response.json()
-  logger.info('接口数据:', data)
+  while (!reachedEnd) {
+    await page.waitForSelector('li.job-card-box', { timeout: 1000 })
+
+    const jobBoxes = await page.$$('li.job-card-box')
+    const currentJobCount = jobBoxes.length
+
+    if (currentJobCount === lastJobCount) {
+      reachedEnd = true
+      break
+    }
+
+    for (let i = lastJobCount; i < currentJobCount; i++) {
+      // 处理职位
+      await handleJobBox(jobBoxes[i], page)
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    await scrollAndWaitForNewJobs(page)
+    lastJobCount = currentJobCount
+  }
 }
 
-export async function clickAllJobsAndCommunicate(page: Page) {
-  await page.waitForSelector("div[class='card-area']", { timeout: 10000 })
+async function handleJobBox(jobBox: ElementHandle, page: Page) {
+  // 处理单个职位卡片的所有逻辑
+  // 包括 boss 在线判断、点击、沟通等
+  try {
+    const jobName = await jobBox.$eval(
+      '.job-name',
+      (el: Element) => el.textContent
+    )
+    logger.info(`职位名称: ${jobName}`)
 
-  logger.info('收集当前页面所有卡片')
-  const jobCards = await page.$$('.card-area')
-  for (const jobCard of jobCards) {
-    const jobBox = await jobCard.$('li.job-card-box')
-    if (jobBox) {
-      const jobName = await jobBox.$eval('.job-name', (el) => el.textContent)
-      logger.info(`职位名称: ${jobName}`)
-
-      const jobSalary = await jobBox.$eval(
-        '.job-salary',
-        (el) => el.textContent
-      )
-      if (jobSalary) {
-        const codes = Array.from(jobSalary)
-          .map((ch) => '\\u' + ch.charCodeAt(0).toString(16))
-          .join(' ')
-        logger.info(`职位薪资: ${codes}`)
-      }
-
-      const bossOnlineIcon = await jobBox.$('.boss-online-icon')
-      if (bossOnlineIcon) {
-        logger.info('boss在线,准备开始沟通')
-      } else {
-        logger.info('boss不在线')
-      }
+    const jobSalary = await jobBox.$eval(
+      '.job-salary',
+      (el: Element) => el.textContent
+    )
+    if (jobSalary) {
+      const codes = Array.from(jobSalary)
+        .map((ch) => '\\u' + ch.charCodeAt(0).toString(16))
+        .join(' ')
+      logger.info(`职位薪资: ${codes}`)
     }
+
+    const bossOnlineIcon = await jobBox.$('.boss-online-icon')
+    if (bossOnlineIcon) {
+      logger.info('boss在线,准备开始沟通')
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      logger.info('点击职位卡片')
+      await jobBox.click()
+
+      logger.info('等待立即沟通按钮出现')
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await page.waitForSelector('a.op-btn.op-btn-chat', { timeout: 10000 })
+      await page.click('a.op-btn.op-btn-chat')
+      logger.info('点击沟通按钮')
+
+      logger.info('等待沟通弹窗')
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await page.waitForSelector('a.default-btn.cancel-btn', {
+        timeout: 10000,
+      })
+      await page.click('a.default-btn.cancel-btn')
+      logger.info('点击留在此页')
+    } else {
+      logger.info('boss不在线')
+    }
+  } catch (err) {
+    logger.error('处理职位卡片时出错: ' + (err as Error).message)
   }
+}
+
+// 滚动到页面底部加载新职位
+async function scrollAndWaitForNewJobs(page: Page) {
+  await page.evaluate(() => {
+    window.scrollTo(0, document.body.scrollHeight)
+  })
+  await new Promise((resolve) => setTimeout(resolve, 1500))
 }
